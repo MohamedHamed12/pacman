@@ -76,6 +76,14 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+
+    from dfs import dfs_recursive, dfs_stack
+    # return dfs_rec(problem)
+    return dfs_stack(problem)
+
+
+    
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
