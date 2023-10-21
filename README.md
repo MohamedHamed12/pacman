@@ -44,3 +44,4 @@ To run the project with different maze configurations using the SearchAgent, fol
 - You can explore other maze configurations and agent types by modifying the `-l` and `-p` flags in the provided commands.
 - Feel free to experiment with different search algorithms and parameters to see how Pacman performs in various scenarios.
 
+![Pacman GIF](readme/dfs.gif)
