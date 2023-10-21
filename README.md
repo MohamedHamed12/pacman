@@ -21,9 +21,9 @@ To run the project with different maze configurations using the SearchAgent, fol
 
 3. Use the following commands to run Pacman with different mazes:
    - move to project folder 
-   ```bash
+     ```bash
      cd project
-   ``` 
+     ``` 
    - To run Pacman in the "tinyMaze" configuration:
      ```bash
      python pacman.py -l tinyMaze -p SearchAgent
