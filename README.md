@@ -22,7 +22,7 @@ To run the project with different maze configurations using the SearchAgent, fol
 3. Use the following commands to run Pacman with different mazes:
    - move to project folder 
    ```bash
-    cd project
+     cd project
    ``` 
    - To run Pacman in the "tinyMaze" configuration:
      ```bash
