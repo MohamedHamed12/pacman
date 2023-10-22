@@ -47,9 +47,60 @@ def dfs_recursive(problem: SearchProblem):
 
 
 
-def dfs_stack(problem):
+# def dfs_stack(problem):
+#     """
+#     Depth-first search algorithm to find a valid path in a problem.
+
+#     Args:
+#         problem: The problem to solve.
+
+#     Returns:
+#         The valid path found.
+#     """
+#     stack=CustomStack()
+#     stack.push(problem.getStartState())
+#     visited = set()  # Initialize the set of visited states
+#     path = CustomStack()
+#     path.push(None)
+
+#     while stack:
+#         state = stack.peek()
+#         if state in visited:
+#             stack.pop()
+#             path.pop()  
+#             continue
+
+#         visited.add(state)  
+#         if problem.isGoalState(state):
+#             break
+
+#         for new_state, new_action, cost in problem.getSuccessors(state):
+#             if  new_state in visited or stack.contains(new_state) :
+#                 continue
+#             stack.push(new_state)  
+#             path.push(new_action) 
+
+#     ans = [path.get_item(i) for i in range(1, stack.size()) if stack.get_item(i) in visited]  # Retrieve the valid path
+#     # print(len(ans))
+#     return ans
+
+
+
+
+def get_path(cur_state,parent):
+    total_cost = 0
+    path = []
+    while cur_state in parent:
+        assert cur_state  in parent, f"Error: {cur_state} is in parent"
+        cur_state, action , cost = parent[cur_state]
+        path.append(action)  
+        total_cost += cost
+    print(total_cost)
+    return path[::-1],total_cost
+
+def dfs_stack(problem ) -> list:
     """
-    Depth-first search algorithm to find a valid path in a problem.
+    breadth-first search algorithm to find a valid path in a problem.
 
     Args:
         problem: The problem to solve.
@@ -57,30 +108,23 @@ def dfs_stack(problem):
     Returns:
         The valid path found.
     """
-    stack=CustomStack()
-    stack.push(problem.getStartState())
-    # stack = [problem.getStartState()]  # Initialize the stack with the start state
+    start_state = problem.getStartState()
+    queue = CustomStack([(start_state, None)])  # Store (state, action) pairs
     visited = set()  # Initialize the set of visited states
-    # path = [None]  # Initialize the path with None for the start state
-    path = CustomStack()
-    path.push(None)
+    parent = {}  # Store parent states for reconstructing the path
+    visited.add(start_state)
+    
+    while queue.size()>0:
+        state, _ = queue.pop()
 
-    while stack:
-        state = stack.peek()
-        if state in visited:
-            stack.pop()
-            path.pop()  
-            continue
 
-        visited.add(state)  
         if problem.isGoalState(state):
-            break
+            path, total_cost = get_path(state,parent)
+            return path
 
         for new_state, new_action, cost in problem.getSuccessors(state):
-            if  new_state in visited or stack.contains(new_state) :
-                continue
-            stack.push(new_state)  
-            path.push(new_action) 
-
-    ans = [path.get_item(i) for i in range(1, stack.size()) if stack.get_item(i) in visited]  # Retrieve the valid path
-    return ans
+            if new_state not in visited:
+                queue.push((new_state, new_action))
+                parent[new_state] = (state, new_action, cost)
+                visited.add(new_state)
+   
