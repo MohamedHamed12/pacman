@@ -1,6 +1,7 @@
 
+import heapq
 from search import SearchProblem
-from util import Stack, Queue
+from util import PriorityQueue, Stack, Queue
 class CustomStack(Stack):
     def __init__(self,lst):
         self.list = lst
@@ -20,3 +21,8 @@ class CustomQueue(Queue):
 
     def size(self):
         return len(self.list)
+class CustomPriorityQueue(PriorityQueue):
+   
+    def size(self):
+        return len(self.heap)
+   

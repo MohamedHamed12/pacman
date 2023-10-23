@@ -77,7 +77,7 @@ def depthFirstSearch(problem: SearchProblem):
     """
     "*** YOUR CODE HERE ***"
 
-    from dfs import dfs_recursive, dfs_stack
+    from algorithms.dfs import dfs_recursive, dfs_stack
     # return dfs_recursive(problem)
     return dfs_stack(problem)
 
@@ -89,13 +89,15 @@ def depthFirstSearch(problem: SearchProblem):
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    from bfs import bfs_queue
+    from algorithms.bfs import bfs_queue
     return bfs_queue(problem)
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    from algorithms.ucs import ucs
+    return ucs(problem)
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):

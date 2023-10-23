@@ -1,6 +1,4 @@
-from collections import defaultdict
 from extend_util import CustomQueue
-from collections import deque
 
 def get_path(cur_state,parent):
     total_cost = 0
@@ -28,7 +26,7 @@ def bfs_queue(problem ) -> list:
     visited = set()  # Initialize the set of visited states
     parent = {}  # Store parent states for reconstructing the path
     visited.add(start_state)
-    
+
     while queue.size()>0:
         state, _ = queue.pop()
 
