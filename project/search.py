@@ -110,6 +110,8 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    from algorithms.astar_search import astar_search
+    return astar_search(problem, heuristic)
     util.raiseNotDefined()
 
 
