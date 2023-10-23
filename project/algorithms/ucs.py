@@ -1,23 +1,4 @@
-import heapq
-# from extend_util import  CustomPriorityQueue
-class CustomPriorityQueue:
-    def __init__(self):
-        self.heap = []
-    def push(self, item, priority):
-        heapq.heappush(self.heap, (priority, item))
-    def pop(self):
-        priority,item=heapq.heappop(self.heap)
-        return ( item, priority)
-    
-def get_path(cur_state,parent):
-    total_cost = 0
-    path = []
-    while cur_state in parent:
-        cur_state, action , cost = parent[cur_state]
-        path.append(action)  
-        total_cost += cost
-    return path[::-1],total_cost
-
+from extend_util import CustomPriorityQueue
 
 def ucs(problem):
     frontier =CustomPriorityQueue()
@@ -43,3 +24,11 @@ def ucs(problem):
            
 
  
+def get_path(cur_state,parent):
+    total_cost = 0
+    path = []
+    while cur_state in parent:
+        cur_state, action , cost = parent[cur_state]
+        path.append(action)  
+        total_cost += cost
+    return path[::-1],total_cost

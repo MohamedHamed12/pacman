@@ -332,8 +332,13 @@ class CornersProblem(search.SearchProblem):
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
         return len(actions)
-
-
+    
+##################################
+from algorithms.corners_problem import CusomCornersProblem
+class CornersProblem(CusomCornersProblem,):
+    def __init__(self, startingGameState: pacman.GameState) -> None:
+        super().__init__(startingGameState)
+##########################################
 def cornersHeuristic(state: Any, problem: CornersProblem):
     """
     A heuristic for the CornersProblem that you defined.

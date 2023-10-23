@@ -1,20 +1,4 @@
-
-import heapq
-
-
-class CustomPriorityQueue:
-    def __init__(self):
-        self.heap = []
-
-    def push(self, item, priority):
-        heapq.heappush(self.heap, (priority, item))
-
-    def pop(self):
-        priority, item = heapq.heappop(self.heap)
-        return (item, priority)
-
-    def size(self):
-        return len(self.heap)
+from extend_util import CustomPriorityQueue
 
 
 def astar_search(problem, heuristic_func):
@@ -23,6 +7,7 @@ def astar_search(problem, heuristic_func):
     parent = {}
 
     start = problem.getStartState()
+    
     frontier.push(start, 0)
 
     while frontier.size():
