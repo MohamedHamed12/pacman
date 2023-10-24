@@ -6,5 +6,6 @@ def get_path(cur_state,parent):
         cur_state, action , cost = parent[cur_state]
         path.append(action)  
         total_cost += cost
-    print(total_cost)
+        
+    print("Total cost: ", total_cost)
     return path[::-1],total_cost
