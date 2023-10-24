@@ -90,3 +90,20 @@ class CusomCornersProblem(search.SearchProblem):
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
         return len(actions)
+
+def get_total_distance(pos,remain_corners):
+    total_distance=0
+    num=len(remain_corners)
+    for _ in range(num):
+        distances=[(corner,util.manhattanDistance(pos, corner)) for corner in remain_corners]
+        distances=sorted(distances)
+        pos,dis=distances.pop(0)
+        total_distance+=dis
+    return total_distance
+
+def  CustomHeuristic(state, corners):
+    position, visited_corners = state
+    remain_corners =list(filter(lambda x: x not in visited_corners, corners))
+    return get_total_distance(position,remain_corners)
+
+
