@@ -95,10 +95,13 @@ def get_total_distance(pos,remain_corners):
     total_distance=0
     num=len(remain_corners)
     for _ in range(num):
-        distances=[(corner,util.manhattanDistance(pos, corner)) for corner in remain_corners]
+        # print(len(remain_corners))
+        distances=[(util.manhattanDistance(pos, corner),corner) for corner in remain_corners]
         distances=sorted(distances)
-        pos,dis=distances.pop(0)
+        dis,pos=distances.pop(0)
+        remain_corners.remove(pos)
         total_distance+=dis
+    # print(total_distance)
     return total_distance
 
 def  CustomHeuristic(state, corners):
