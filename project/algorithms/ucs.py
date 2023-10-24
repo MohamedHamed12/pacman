@@ -1,13 +1,13 @@
-from extend_util import CustomPriorityQueue, get_path
-
+from extend_util import  get_path
+from util import PriorityQueueWithFunction
 def ucs(problem):
-    frontier =CustomPriorityQueue()
+    frontier =PriorityQueueWithFunction(lambda x: x[1])
     explored = set()
     parent={}
     start_state = problem.getStartState()
-    frontier.push(start_state, 0)
+    frontier.push((start_state, 0))
 
-    while frontier:
+    while not frontier.isEmpty():
         current_state , current_cost= frontier.pop()
      
 
@@ -19,7 +19,7 @@ def ucs(problem):
         for new_state, new_action, new_cost in problem.getSuccessors(current_state):
             if new_state  in explored:continue
             total_cost = current_cost + new_cost
-            frontier.push(new_state, total_cost)
+            frontier.push((new_state, total_cost))
             parent[new_state] = (current_state, new_action, new_cost)
            
 

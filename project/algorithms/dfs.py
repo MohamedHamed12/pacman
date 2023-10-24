@@ -1,6 +1,6 @@
 
 from search import SearchProblem
-from extend_util import CustomStack, get_path
+from extend_util import  get_path
 import util
 
 def dfs_recursive(problem: SearchProblem):
@@ -56,12 +56,13 @@ def dfs_stack(problem ) -> list:
         The valid path found.
     """
     start_state = problem.getStartState()
-    queue = CustomStack([(start_state, None)])  # Store (state, action) pairs
+    frontier = util.Stack()  # Store (state, action) pairs
+    frontier.push((start_state, None))  
     visited = set()  # Initialize the set of visited states
     parent = {}  # Store parent states for reconstructing the path
     
-    while queue.size()>0:
-        state, _ = queue.pop()
+    while not frontier.isEmpty():
+        state, _ = frontier.pop()
 
 
         visited.add(state)
@@ -71,5 +72,5 @@ def dfs_stack(problem ) -> list:
 
         for new_state, new_action, cost in problem.getSuccessors(state):
             if new_state not in visited:
-                queue.push((new_state, new_action))
+                frontier.push((new_state, new_action))
                 parent[new_state] = (state, new_action, cost)

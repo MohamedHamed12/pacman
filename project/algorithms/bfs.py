@@ -1,5 +1,5 @@
-from extend_util import CustomQueue, get_path
-
+from extend_util import  get_path
+import util
 def bfs_queue(problem ) -> list:
     """
     breadth-first search algorithm to find a valid path in a problem.
@@ -11,12 +11,13 @@ def bfs_queue(problem ) -> list:
         The valid path found.
     """
     start_state = problem.getStartState()
-    queue = CustomQueue([(start_state, None)])  # Store (state, action) pairs
+    queue = util.Queue()  # Store (state, action) pairs
+    queue.push((start_state, None))  # Store (state, action) pairs
     visited = set()  # Initialize the set of visited states
     parent = {}  # Store parent states for reconstructing the path
     visited.add(start_state)
 
-    while queue.size()>0:
+    while not queue.isEmpty():
         state, _ = queue.pop()
 
 
