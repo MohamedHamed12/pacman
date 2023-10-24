@@ -1,5 +1,4 @@
-from extend_util import CustomPriorityQueue
-
+from extend_util import CustomPriorityQueue, get_path
 
 def astar_search(problem, heuristic_func):
     frontier = CustomPriorityQueue()
@@ -29,13 +28,3 @@ def astar_search(problem, heuristic_func):
             explored.add(new_state)
             parent[new_state] = (current_state, new_action, new_cost)
     return None
-
-
-def get_path(cur_state, parent):
-    total_cost = 0
-    path = []
-    while cur_state in parent:
-        cur_state, action, cost = parent[cur_state]
-        path.append(action)
-        total_cost += cost
-    return path[::-1], total_cost

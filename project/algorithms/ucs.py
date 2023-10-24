@@ -1,4 +1,4 @@
-from extend_util import CustomPriorityQueue
+from extend_util import CustomPriorityQueue, get_path
 
 def ucs(problem):
     frontier =CustomPriorityQueue()
@@ -13,7 +13,6 @@ def ucs(problem):
 
         if  problem.isGoalState(current_state):
             path, total_cost = get_path(current_state,parent)
-            print("Total cost: ",total_cost)
             return path
 
         explored.add(current_state)
@@ -25,11 +24,3 @@ def ucs(problem):
            
 
  
-def get_path(cur_state,parent):
-    total_cost = 0
-    path = []
-    while cur_state in parent:
-        cur_state, action , cost = parent[cur_state]
-        path.append(action)  
-        total_cost += cost
-    return path[::-1],total_cost
