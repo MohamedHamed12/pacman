@@ -13,6 +13,7 @@ def ucs(problem):
 
         if  problem.isGoalState(current_state):
             path, total_cost = get_path(current_state,parent)
+            print("Total cost: ",total_cost)
             return path
 
         explored.add(current_state)

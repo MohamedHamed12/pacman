@@ -25,15 +25,11 @@ class CustomQueue(Queue):
 
 
 import heapq
-class CustomPriorityQueue:
-    def __init__(self):
-        self.heap = []
-
-    def push(self, item, priority):
-        heapq.heappush(self.heap, (priority, item))
+class CustomPriorityQueue(PriorityQueue):
+ 
 
     def pop(self):
-        priority, item = heapq.heappop(self.heap)
+        priority, self.count, item =heapq.heappop(self.heap )
         return (item, priority)
 
     def size(self):
