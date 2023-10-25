@@ -1,33 +1,10 @@
-# searchAgents.py
-# ---------------
-
-
-"""
-This file contains all of the agents that can be selected to control Pacman.  To
-select an agent, use the '-p' option when running pacman.py.  Arguments can be
-passed to your agent using '-a'.  For example, to load a SearchAgent that uses
-depth first search (dfs), run the following command:
-
-> python pacman.py -p SearchAgent -a fn=depthFirstSearch
-
-Commands to invoke other search strategies can be found in the project
-description.
-
-Please only change the parts of the file you are asked to.  Look for the lines
-that say
-
-"*** YOUR CODE HERE ***"
-
-The parts you fill in start about 3/4 of the way down.  Follow the project
-description for details.
-
-Good luck and happy searching!
-"""
-
+from functools import lru_cache, partial
+from itertools import combinations
 from typing import List, Tuple, Any
 from game import Directions
 from game import Agent
 from game import Actions
+from extend_util import kruskal
 import util
 import time
 import search
@@ -261,12 +238,6 @@ def euclideanHeuristic(position, problem, info={}):
 #####################################################
 
 class CornersProblem(search.SearchProblem):
-    """
-    This search problem finds paths through all four corners of a layout.
-
-    You must select a suitable state space and successor function
-    """
-
     def __init__(self, startingGameState: pacman.GameState):
         """
         Stores the walls, pacman's starting position and corners.
@@ -279,13 +250,14 @@ class CornersProblem(search.SearchProblem):
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
-
+        self.start_state = (self.startingPosition,())
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
         "*** YOUR CODE HERE ***"
+        return self.start_state
         util.raiseNotDefined()
 
     def isGoalState(self, state: Any):
@@ -293,6 +265,7 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        return len(state[1])==4
         util.raiseNotDefined()
 
     def getSuccessors(self, state: Any):
@@ -316,6 +289,16 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            x,y=state[0]
+            visited_corners = set(state[1])
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                new_state = (nextx, nexty)
+                if new_state in self.corners :
+                    visited_corners.add(new_state)
+                successors.append(((new_state,tuple(visited_corners)),action,1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -332,32 +315,57 @@ class CornersProblem(search.SearchProblem):
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
         return len(actions)
+    
 
 
+
+def get_total_distance(pos,remain_corners):
+    total_distance=0
+    num=len(remain_corners)
+    for _ in range(num):
+        distances=[(util.manhattanDistance(pos, corner),corner) for corner in remain_corners]
+        distances=sorted(distances)
+        dis,pos=distances.pop(0)
+        remain_corners.remove(pos)
+        total_distance+=dis
+    return total_distance
 def cornersHeuristic(state: Any, problem: CornersProblem):
-    """
-    A heuristic for the CornersProblem that you defined.
 
-      state:   The current search state
-               (a data structure you chose in your search problem)
-
-      problem: The CornersProblem instance for this layout.
-
-    This function should always return a number that is a lower bound on the
-    shortest path from the state to a goal of the problem; i.e.  it should be
-    admissible (as well as consistent).
-    """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    position, visited_corners = state
+    remain_corners =list(filter(lambda x: x not in visited_corners, corners))
+    return get_total_distance(position,remain_corners)
 
-    "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+
+
+
+
+
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
         self.searchFunction = lambda prob: search.aStarSearch(prob, cornersHeuristic)
         self.searchType = CornersProblem
+
+
+
+@lru_cache(maxsize=None)
+def getFoodIndices(gameState):
+    return {f : i for i, f in enumerate(gameState.getFood().asList())}
+
+@lru_cache(maxsize=None)
+def getFoodAdjacencyMatrix(gameState):
+    foodList = gameState.getFood().asList()
+    foodIndices = getFoodIndices(gameState)
+    numFood = len(foodList)
+    adjM =[[0] * numFood for _ in range(numFood)]
+    for f1, f2 in combinations(foodList, 2):
+        i, j = foodIndices[f1], foodIndices[f2]
+
+        adjM[i][ j] = adjM[j][ i] = mazeDistance( f1, f2,gameState)
+    return adjM
 
 class FoodSearchProblem:
     """
@@ -373,8 +381,14 @@ class FoodSearchProblem:
         self.walls = startingGameState.getWalls()
         self.startingGameState = startingGameState
         self._expanded = 0 # DO NOT CHANGE
-        self.heuristicInfo = {} # A dictionary for the heuristic to store information
+        # self.heuristicInfo = {} # A dictionary for the heuristic to store information
+        self.heuristicInfo = {
+            'initialFood': startingGameState.getFood().asList(),
+            'foodIndices': getFoodIndices(startingGameState),
+            'foodAdjMatrix' : getFoodAdjacencyMatrix(startingGameState),
+            'mazeDistFn'    : partial(mazeDistance, gameState=startingGameState)
 
+        } # A dictionary for the heuristic to store information
     def getStartState(self):
         return self.start
 
@@ -415,6 +429,17 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
 
+
+def foodAdjMatrixAfterEating(problem, foodLeft):
+    foodList = problem.heuristicInfo['initialFood']
+    foodIndices = problem.heuristicInfo['foodIndices']
+    M = problem.heuristicInfo['foodAdjMatrix'].copy()
+    for f in set(foodList).difference(set(foodLeft)):
+        i = foodIndices[f]
+        M[i] = [0] * len(M)
+        for row in range(len(M)):M[row][i] = 0
+            
+    return M
 def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     Your heuristic for the FoodSearchProblem goes here.
@@ -443,9 +468,18 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    position, foodGrid = state
+    # pacmanPos, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    pacmanPos, foodGrid = state
+    foodLeft = foodGrid.asList()
+    adjM = foodAdjMatrixAfterEating(problem, foodLeft)
+    # print(adjM)
+    mstTotalW = kruskal(adjM)[0]
+    distToPacman = partial(problem.heuristicInfo['mazeDistFn'], pacmanPos)
+    closestFood = min(map(distToPacman, foodLeft), default=0)
+
+    return closestFood + mstTotalW
+    # return 0
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -532,4 +566,7 @@ def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pa
     prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
     return len(search.bfs(prob))
 
-from algorithms.searchAgents import *
+
+
+
+

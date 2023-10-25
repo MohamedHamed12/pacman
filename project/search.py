@@ -76,28 +76,16 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-
-    from algorithms.dfs import dfs_recursive, dfs_stack
-    # return dfs_recursive(problem)
-    return dfs_stack(problem)
-
-
-    
-
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    from algorithms.bfs import bfs_queue
-    return bfs_queue(problem)
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    from algorithms.ucs import ucs
-    return ucs(problem)
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -110,8 +98,6 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    from algorithms.astar_search import astar_search
-    return astar_search(problem, heuristic)
     util.raiseNotDefined()
 
 
@@ -120,3 +106,6 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+
+
+from algorithms.search import *
