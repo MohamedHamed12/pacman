@@ -11,7 +11,6 @@ def get_path(cur_state,parent):
     return path[::-1],total_cost
 
 
-
 class UnionFind:
     def __init__(self, n):
         self.parent = list(range(n))
