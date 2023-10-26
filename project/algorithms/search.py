@@ -71,8 +71,6 @@ def depthFirstSearch(problem: SearchProblem):
     
     while not frontier.isEmpty():
         state, _ = frontier.pop()
-
-
         visited.add(state)
         if problem.isGoalState(state):
             path, total_cost = get_path(state,parent)
